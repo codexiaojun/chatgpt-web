@@ -1,15 +1,17 @@
-import type { AxiosProgressEvent, GenericAbortSignal } from 'axios'
-import { post } from '@/utils/request'
-import { useSettingStore } from '@/store'
+import type {AxiosProgressEvent, GenericAbortSignal} from 'axios'
+import {getLocalState} from '@/store/modules/user/helper'
+import {post} from '@/utils/request'
+import {useSettingStore} from '@/store'
 
 export function fetchChatAPI<T = any>(
   prompt: string,
   options?: { conversationId?: string; parentMessageId?: string },
   signal?: GenericAbortSignal,
 ) {
+  const gptKey = getLocalState().userInfo.gptKey
   return post<T>({
     url: '/chat',
-    data: { prompt, options },
+    data: { prompt, gptKey, options },
     signal,
   })
 }
@@ -23,6 +25,7 @@ export function fetchChatConfig<T = any>() {
 export function fetchChatAPIProcess<T = any>(
   params: {
     prompt: string
+    gptKey: string
     options?: { conversationId?: string; parentMessageId?: string }
     signal?: GenericAbortSignal
     onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void },
@@ -31,7 +34,7 @@ export function fetchChatAPIProcess<T = any>(
 
   return post<T>({
     url: '/chat-process',
-    data: { prompt: params.prompt, options: params.options, systemMessage: settingStore.systemMessage },
+    data: { prompt: params.prompt, key: params.gptKey, options: params.options, systemMessage: settingStore.systemMessage },
     signal: params.signal,
     onDownloadProgress: params.onDownloadProgress,
   })

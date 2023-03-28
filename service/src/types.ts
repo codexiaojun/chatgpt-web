@@ -1,7 +1,8 @@
-import type { FetchFn } from 'chatgpt'
+import type {FetchFn} from 'chatgpt'
 
 export interface RequestProps {
   prompt: string
+  key: string
   options?: ChatContext
   systemMessage: string
 }

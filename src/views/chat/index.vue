@@ -16,6 +16,7 @@ import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
 import { fetchChatAPIProcess } from '@/api'
 import { t } from '@/locales'
+import { getLocalState } from '@/store/modules/user/helper'
 
 let controller = new AbortController()
 
@@ -26,6 +27,8 @@ const dialog = useDialog()
 const ms = useMessage()
 
 const chatStore = useChatStore()
+
+const gptKey = getLocalState().userInfo.gptKey
 
 useCopyCode()
 
@@ -78,7 +81,7 @@ async function onConversation() {
       inversion: true,
       error: false,
       conversationOptions: null,
-      requestOptions: { prompt: message, options: null },
+      requestOptions: { prompt: message, gptKey, options: null },
     },
   )
   scrollToBottom()
@@ -101,7 +104,7 @@ async function onConversation() {
       inversion: false,
       error: false,
       conversationOptions: null,
-      requestOptions: { prompt: message, options: { ...options } },
+      requestOptions: { prompt: message, gptKey, options: { ...options } },
     },
   )
   scrollToBottom()
@@ -111,6 +114,7 @@ async function onConversation() {
     const fetchChatAPIOnce = async () => {
       await fetchChatAPIProcess<Chat.ConversationResponse>({
         prompt: message,
+        gptKey,
         options,
         signal: controller.signal,
         onDownloadProgress: ({ event }) => {
@@ -133,7 +137,7 @@ async function onConversation() {
                 error: false,
                 loading: false,
                 conversationOptions: { conversationId: data.conversationId, parentMessageId: data.id },
-                requestOptions: { prompt: message, options: { ...options } },
+                requestOptions: { prompt: message, gptKey, options: { ...options } },
               },
             )
 
@@ -195,7 +199,7 @@ async function onConversation() {
         error: true,
         loading: false,
         conversationOptions: null,
-        requestOptions: { prompt: message, options: { ...options } },
+        requestOptions: { prompt: message, gptKey, options: { ...options } },
       },
     )
     scrollToBottomIfAtBottom()
@@ -232,7 +236,7 @@ async function onRegenerate(index: number) {
       error: false,
       loading: true,
       conversationOptions: null,
-      requestOptions: { prompt: message, ...options },
+      requestOptions: { prompt: message, gptKey, ...options },
     },
   )
 
@@ -241,6 +245,7 @@ async function onRegenerate(index: number) {
     const fetchChatAPIOnce = async () => {
       await fetchChatAPIProcess<Chat.ConversationResponse>({
         prompt: message,
+        gptKey,
         options,
         signal: controller.signal,
         onDownloadProgress: ({ event }) => {
@@ -263,7 +268,7 @@ async function onRegenerate(index: number) {
                 error: false,
                 loading: false,
                 conversationOptions: { conversationId: data.conversationId, parentMessageId: data.id },
-                requestOptions: { prompt: message, ...options },
+                requestOptions: { prompt: message, gptKey, ...options },
               },
             )
 
@@ -306,7 +311,7 @@ async function onRegenerate(index: number) {
         error: true,
         loading: false,
         conversationOptions: null,
-        requestOptions: { prompt: message, ...options },
+        requestOptions: { prompt: message, gptKey, ...options },
       },
     )
   }

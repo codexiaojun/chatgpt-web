@@ -1,15 +1,15 @@
 import * as dotenv from 'dotenv'
 import 'isomorphic-fetch'
-import type { ChatGPTAPIOptions, ChatMessage, SendMessageOptions } from 'chatgpt'
-import { ChatGPTAPI, ChatGPTUnofficialProxyAPI } from 'chatgpt'
-import { SocksProxyAgent } from 'socks-proxy-agent'
+import type {ChatGPTAPIOptions, ChatMessage, SendMessageOptions} from 'chatgpt'
+import {ChatGPTAPI, ChatGPTUnofficialProxyAPI} from 'chatgpt'
+import {SocksProxyAgent} from 'socks-proxy-agent'
 import httpsProxyAgent from 'https-proxy-agent'
 import fetch from 'node-fetch'
 import axios from 'axios'
-import { sendResponse } from '../utils'
-import { isNotEmptyString } from '../utils/is'
-import type { ApiModel, ChatContext, ChatGPTUnofficialProxyAPIOptions, ModelConfig } from '../types'
-import type { RequestOptions } from './types'
+import {sendResponse} from '../utils'
+import {isNotEmptyString} from '../utils/is'
+import type {ApiModel, ChatContext, ChatGPTUnofficialProxyAPIOptions, ModelConfig} from '../types'
+import type {RequestOptions} from './types'
 
 const { HttpsProxyAgent } = httpsProxyAgent
 
@@ -27,9 +27,9 @@ const ErrorCodeMessage: Record<string, string> = {
 const timeoutMs: number = !isNaN(+process.env.TIMEOUT_MS) ? +process.env.TIMEOUT_MS : 30 * 1000
 
 let apiModel: ApiModel
-
-if (!isNotEmptyString(process.env.OPENAI_API_KEY) && !isNotEmptyString(process.env.OPENAI_ACCESS_TOKEN))
-  throw new Error('Missing OPENAI_API_KEY or OPENAI_ACCESS_TOKEN environment variable')
+//
+// if (!isNotEmptyString(process.env.OPENAI_API_KEY) && !isNotEmptyString(process.env.OPENAI_ACCESS_TOKEN))
+//   throw new Error('Missing OPENAI_API_KEY or OPENAI_ACCESS_TOKEN environment variable')
 
 let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
 
@@ -88,8 +88,10 @@ let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
 })()
 
 async function chatReplyProcess(options: RequestOptions) {
-  const { message, lastContext, process, systemMessage } = options
+  const { message, gptKey, lastContext, process, systemMessage } = options
   try {
+    global.console.error(gptKey)
+    global.console.error(message)
     let options: SendMessageOptions = { timeoutMs }
 
     if (apiModel === 'ChatGPTAPI') {

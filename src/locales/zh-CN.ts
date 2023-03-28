@@ -52,6 +52,7 @@ export default {
   },
   setting: {
     setting: '设置',
+		gptKey: '你的gptKey',
     general: '总览',
     advanced: '高级',
     config: '配置',

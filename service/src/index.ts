@@ -1,10 +1,10 @@
 import express from 'express'
-import type { RequestProps } from './types'
-import type { ChatMessage } from './chatgpt'
-import { chatConfig, chatReplyProcess, currentModel } from './chatgpt'
-import { auth } from './middleware/auth'
-import { limiter } from './middleware/limiter'
-import { isNotEmptyString } from './utils/is'
+import type {RequestProps} from './types'
+import type {ChatMessage} from './chatgpt'
+import {chatConfig, chatReplyProcess, currentModel} from './chatgpt'
+import {auth} from './middleware/auth'
+import {limiter} from './middleware/limiter'
+import {isNotEmptyString} from './utils/is'
 
 const app = express()
 const router = express.Router()
@@ -23,10 +23,11 @@ router.post('/chat-process', [auth, limiter], async (req, res) => {
   res.setHeader('Content-type', 'application/octet-stream')
 
   try {
-    const { prompt, options = {}, systemMessage } = req.body as RequestProps
+    const { prompt, key, options = {}, systemMessage } = req.body as RequestProps
     let firstChunk = true
     await chatReplyProcess({
       message: prompt,
+      gptKey: key,
       lastContext: options,
       process: (chat: ChatMessage) => {
         res.write(firstChunk ? JSON.stringify(chat) : `\n${JSON.stringify(chat)}`)
